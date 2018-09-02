@@ -1,3 +1,14 @@
+$(function(){
+   $(document).on("blur", ".number", function(){
+      if(!$.isNumeric($(this).html())){
+        $(this).addClass("invalid");
+      }
+      else{
+        $(this).removeClass("invalid");
+      }
+   });
+});
+
 var $TABLE = $('#table');
 var $BTN = $('#export-btn');
 var $EXPORT = $('#export');
