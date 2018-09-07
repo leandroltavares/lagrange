@@ -12,9 +12,12 @@ $(function(){
 var $TABLE = $('#table');
 var $BTN = $('#export-btn');
 var $EXPORT = $('#export');
+var $CALC = $('#calculate-btn');
+var $INTERPOLATE = $('#interpolate-btn');
+
 
 $('.table-add').click(function () {
-  var $clone = $TABLE.find('tr.hide').clone(true).removeClass('hide table-line');
+  var $clone = $TABLE.find('tr.hide').clone(true).removeClass('hide table-line d-none');
   $TABLE.find('table').append($clone);
 });
 
@@ -63,3 +66,75 @@ $BTN.click(function () {
   // Output the result
   $EXPORT.text(JSON.stringify(data));
 });
+
+function renderTexExpressions(la){
+   baseLparagraphId = "equationL";
+
+	 for (var index = 0; index < la.pointCount(); index++) {
+	 	 $("#divEquationL").append(`<p id="${baseLparagraphId + index}">`);
+	 }
+
+	 for (var index = 0; index < la.pointCount(); index++) {
+		 katex.render(la.generateTexLexpression(index), document.getElementById(baseLparagraphId + index), {
+			 throwOnError: false
+			});
+	 }
+
+	 katex.render(la.generateTexPexpression(), equationP, {
+		 throwOnError: false
+		});
+}
+
+$('#clear-btn').click(clear);
+
+function clear(){
+  $TABLE.find("tr:not(:hidden)").detach();
+  clearOutput();
+}
+
+function clearOutput(){
+    $("#divEquationL").empty();
+    $("#equationP").empty();
+    $("#divEval").hide();
+    $('#resultAlert').hide();
+    $("#value").val(0);
+}
+
+$CALC.click(function () {
+  clearOutput();
+  var $rows = $TABLE.find('tr:not(:hidden)');
+  var xs = [];
+  var ys = [];
+
+  // Turn all existing rows into a loopable array
+  $rows.each(function () {
+    var $td = $(this).find('td');
+
+    $td.each(function(index){
+      var v = parseFloat($(this).text());
+      if(index == 0){
+        xs.push(v);
+      }
+      else if(index == 1){
+        ys.push(v);
+      }
+    });
+
+  });
+
+  lagrange = new Lagrange(xs[0], ys[0], xs[1], ys[1]);
+
+  for (var i = 2; i < xs.length; i++) {
+    lagrange.addPoint(xs[i], ys[i]);
+  }
+
+  renderTexExpressions(lagrange);
+
+  $("#divEval").show();
+});
+
+$INTERPOLATE.click(function(){
+  let value = parseFloat($("#value").val());
+  $('#resultValue').text(lagrange.evaluateExpression(value));
+  $('#resultAlert').fadeIn();
+})
