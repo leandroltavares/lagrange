@@ -39,7 +39,7 @@ Lagrange.prototype.generateLexpression = function (index) {
 		 }
 	}
 
-	return `${numerator.substr(0, numerator.length - 1)}/ ${denominator.substr(0, denominator.length - 1)}`;
+	return `(${numerator.substr(0, numerator.length - 1)})/ (${denominator.substr(0, denominator.length - 1)})`;
 };
 
 Lagrange.prototype.generatePexpression = function () {
