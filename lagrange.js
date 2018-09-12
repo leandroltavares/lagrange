@@ -28,6 +28,10 @@ Lagrange.prototype.eval = function (x) {
 	//TODO
 };
 
+Lagrange.prototype.estimatePlotBoundaries = function () {
+ //TODO
+}
+
 //Expression section
 Lagrange.prototype.generateLexpression = function (index) {
 	var numerator = "", denominator = "";
