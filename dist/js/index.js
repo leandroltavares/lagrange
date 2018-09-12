@@ -100,32 +100,33 @@ function clearOutput(){
     $("#value").val(0);
 }
 
+var chart = null;
+
 function fillChart(xValues, dataPoints){
+  if(chart != null){
+    chart.destroy();
+  }
   var ctx = document.getElementById("chart");
-  var myChart = new Chart(ctx, {
+
+  chart = new Chart(ctx, {
       type: 'line',
       data: {
         labels: xValues,
           datasets: [{
               label: 'Interpolation',
               data: dataPoints,
-              borderWidth: 1,
+              //borderWidth: 1,
               fill: false,
               lineTension: 0,
-              backgroundColor: 'rgba(0, 0, 0, 0)',
+              //backgroundColor: 'rgba(0, 0, 0, 0)',
               borderColor: 'rgb(255, 99, 132)',
-              cubicInterpolationMode: 'monotone'
+              cubicInterpolationMode: 'monotone',
+              pointRadius: 3,
+              pointHoverRadius: 5
           }]
       },
       options: {
           responsive: true,
-          // scales: {
-          //     yAxes: [{
-          //         ticks: {
-          //             beginAtZero:true
-          //         }
-          //     }]
-          // }
       }
   });
 }
@@ -168,7 +169,7 @@ $INTERPOLATE.click(function(){
   $('#resultValue').text(lagrange.evaluateExpression(value));
   $('#resultAlert').fadeIn();
 
-  const xValues = math.range(-10, 10, 1).toArray();
+  const xValues = lagrange.estimatePlotXvalues();
 
   const dataPoints = xValues.map(function (x) {
              return {'x': x, 'y':lagrange.evaluateExpression(x)}
